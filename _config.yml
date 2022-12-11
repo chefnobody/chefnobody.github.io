@@ -1,0 +1,46 @@
+# Basic
+name:               "Aaron Connolly"
+description:        "Christ Follower, Husband, Father, Software Engineer, Taco Lover"
+
+url:                "https://www.aaronconnolly.com"
+author:             "chefnobody"
+twitter:
+  username:         "chefnobody"
+
+# URL
+baseurl:            ""
+#baseurl:            "" #For Root Domain
+permalink:          /:year/:month/:day/:title/
+
+# Markdown
+markdown:           kramdown
+
+# Navigation
+nav:
+  - name:           "About"
+    href:           "about/"
+  - name:           "Github"
+    href:           "http://github.com/chefnobody"
+  - name:           "Stack Overflow"
+    href:           "http://stackoverflow.com/users/1396884/aaron"
+  - name:           "Resume"
+    href:           "assets/mac-resume-6-8-2021.pdf"
+
+# Sass
+sass:
+  style:            :compressed
+
+# Scopes
+defaults:
+  -
+    scope:
+      path:         ""
+      type:         "pages"
+    values:
+      layout:       "page"
+  -
+    scope:
+      path:         ""
+      type:         "posts"
+    values:
+      layout:       "post"
