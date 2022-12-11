@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Simple API Client for iOS</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Sans+Pro:300,300i,600">
+  <link rel="stylesheet" href="/style.css">
+  <link rel="alternate" type="application/rss+xml" title="RSS Feed for Aaron Connolly" href="/feed.xml" />
+</head>
+<body>
+  <div class="outer-container"></div>
+  <div class="container">
+    <header class="masthead">
+  <h1 class="masthead-title--small">
+    <a href="/">Aaron Connolly</a>
+  </h1>
+</header>
+<div class="content post">
+  <h1 class="post-title">Simple API Client for iOS</h1>
+  <div class="post-date">
+    <time>26 Feb 2021</time>
+  </div>
+  <p>👋  Hi! It’s 2021 and I want to share something I learned in the last year that I now find myself doing over and over again: Abstracting the concept of a “client” in a mobile app for asynchronously fetching data from a remote source.</p>
+
+<p><strong>Note:</strong> the general concept here can be applied to <em>any</em> asychronous operation or task, not just fetching data from a JSON-based REST API.</p>
+
+<h2 id="some-semantics">Some semantics</h2>
+
+<p>For my 💵, the term “client” is a good name for this thing because the remote source is usually “server” software which is … <em>serving</em> resources to clients.</p>
+
+<h2 id="a-few-goals">A few goals</h2>
+
+<p>The client should be <strong>organized and clear</strong>, have <strong>zero dependencies</strong> and be <strong>fully controllable</strong>.</p>
+
+<h2 id="getting-familiar-with-star-wars-api">Getting familiar with Star Wars API</h2>
+
+<p>There are <a href="https://github.com/public-apis/public-apis">many open APIs</a> for which to build a client but I choose the Star Wars API because who doesn’t love Star Wars?</p>
+
+<p><a href="https://swapi.dev/">Star Wars API</a> (called “swapi”) is very easy to use and it omits more complex things like authentication, auth-token refreshing, or allowing clients to write or mutate data.</p>
+
+<p>Browsing the <a href="https://swapi.dev/documentation">documentation</a> will reveal that you can do alot of things like fetch a list of all the <a href="https://swapi.dev/api/people/">People</a>, <a href="https://swapi.dev/api/films/">Films</a>, <a href="https://swapi.dev/api/planets/">Planets</a> and <a href="https://swapi.dev/api/starships/">Starships</a> found in the Star Wars movies.</p>
+
+<p>There’s even API for fetching the schema for a particular resource so you can write code to fetch and update the shape of your models. You can search for entities and encode respones in <a href="https://swapi.dev/api/planets/1/?format=wookiee">Wookiee</a> if necessary!</p>
+
+<h2 id="organizationclarity">Organization/clarity</h2>
+
+<p>Our first goal is to organize and clarify how we might make requests to this service from an iOS application. Consider the <a href="https://swapi.dev/documentation#films">Films</a> entity.</p>
+
+<h4 id="fetch-a-film">Fetch a Film</h4>
+
+<p>Fetching a Film from this API means making the following request, which you can run from Terminal with <code class="language-plaintext highlighter-rouge">curl</code>:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ curl https://swapi.dev/api/films/2/\?format\=json
+</code></pre></div></div>
+
+<h4 id="implementation">Implementation</h4>
+
+<p>If you were to write some code in Swift to do this you might be thinking to start with a protocol that defines a function that takes as input an <strong>identifier for the resource</strong> and a <strong>callback with a result</strong> to invoke when the asynchronous request for data completes:</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">struct</span> <span class="kt">Film</span> <span class="p">{</span>
+    <span class="c1">// ...</span>
+<span class="p">}</span>
+
+<span class="kd">protocol</span> <span class="kt">StarWarsApiClient</span> <span class="p">{</span>
+    <span class="kd">func</span> <span class="nf">fetchFilm</span><span class="p">(</span>
+        <span class="nv">filmId</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span>
+        <span class="nv">done</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">(</span><span class="kt">Result</span><span class="o">&lt;</span><span class="kt">Film</span><span class="p">,</span> <span class="kt">Error</span><span class="o">&gt;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span>
+<span class="p">}</span>
+
+</code></pre></div></div>
+
+<p>Next you would define an object to conform to this protocol and implement the live request. Perhaps a class like this would work:</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">final</span> <span class="kd">class</span> <span class="kt">StarWarsApi</span><span class="p">:</span> <span class="kt">StarWarsApiClient</span> <span class="p">{</span>
+    <span class="kd">func</span> <span class="nf">fetchFilm</span><span class="p">(</span>
+        <span class="nv">filmId</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span>
+        <span class="nv">done</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">(</span><span class="kt">Result</span><span class="o">&lt;</span><span class="kt">Film</span><span class="p">,</span> <span class="kt">Error</span><span class="o">&gt;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span> <span class="p">{</span>
+        <span class="c1">// URLSession ...</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Further, you might even make a mock client that doesn’t make a real HTTP request, but instead returns some <code class="language-plaintext highlighter-rouge">Film</code> you’ve mocked yourself:</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">final</span> <span class="kd">class</span> <span class="kt">MockStarWarsApi</span><span class="p">:</span> <span class="kt">StarWarsApiClient</span> <span class="p">{</span> 
+    <span class="kd">func</span> <span class="nf">fetchFilm</span><span class="p">(</span>
+        <span class="nv">filmId</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span>
+        <span class="nv">done</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">(</span><span class="kt">Result</span><span class="o">&lt;</span><span class="kt">Film</span><span class="p">,</span> <span class="kt">Error</span><span class="o">&gt;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span> <span class="p">{</span>
+        <span class="nf">done</span><span class="p">(</span><span class="o">.</span><span class="nf">success</span><span class="p">(</span><span class="kt">Film</span><span class="o">.</span><span class="n">mock</span><span class="p">))</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>This is starting to feel like something we could use, right? Both in an application and in integration tests.</p>
+
+<p>Well, when we add a new API call to fetch a <code class="language-plaintext highlighter-rouge">Planet</code> details to the protocol, we also have to update the live client and then the mock client. For every method we add to the protocol we need to ensure all conforming structures adopt that new method.</p>
+
+<p>Further, what if we wanted to allow a developer to mock/control/stub the responses to the methods in our mock class? You would update the <code class="language-plaintext highlighter-rouge">MockStarWarsApi</code> class to accept as input a response, then update each method call conformance to return the defined response. That might look like this:</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">final</span> <span class="kd">class</span> <span class="kt">MockStarWarsApi</span><span class="p">:</span> <span class="kt">StarWarsApiClient</span> <span class="p">{</span>
+    <span class="k">let</span> <span class="nv">fetchFilmResponse</span><span class="p">:</span> <span class="kt">Result</span><span class="o">&lt;</span><span class="kt">Film</span><span class="p">,</span> <span class="kt">Error</span><span class="o">&gt;</span>
+
+    <span class="nf">init</span><span class="p">(</span><span class="nv">fetchFilmResponse</span><span class="p">:</span> <span class="kt">Result</span><span class="o">&lt;</span><span class="kt">Film</span><span class="p">,</span> <span class="kt">Error</span><span class="o">&gt;</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">self</span><span class="o">.</span><span class="n">fetchFilmResponse</span> <span class="o">=</span> <span class="n">fetchFilmResponse</span>
+        <span class="c1">// ...</span>
+    <span class="p">}</span>
+
+    <span class="kd">func</span> <span class="nf">fetchFilm</span><span class="p">(</span>
+        <span class="nv">filmId</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span>
+        <span class="nv">done</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">(</span><span class="kt">Result</span><span class="o">&lt;</span><span class="kt">Film</span><span class="p">,</span> <span class="kt">Error</span><span class="o">&gt;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span> <span class="p">{</span>
+        <span class="nf">done</span><span class="p">(</span><span class="n">fetchFilmResponse</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Imagine doing this for a dozen API calls and you’ll find yourself writing a lot of boilerplate. Further, how might you mock one API call to return an error, but have all the others succeed? You might need <em>two</em> different mock conformances of <code class="language-plaintext highlighter-rouge">StarWarsApiClient</code> each with their own subtle variation in behavior for whatever scenario you’re thinking of. For each of those variations you have to implement each and every protocol method.</p>
+
+<p>Is this the best solution?</p>
+
+<hr />
+
+<p>There are many ways to do this of course, but a few years ago I subscribed to <a href="https://www.pointfree.co/">PointFree</a>, a video series that explores functional programming and the Swift language and there I learned a technique for defining and modeling the interface to a dependency like an API as a simple struct. The interface to the asynchronous API is defined by variables on the struct that can be controlled at init-time, or by property-injection, etc…. it is up to you.</p>
+
+<p>On the Star Wars API, fetching a film is as simple as defining a <code class="language-plaintext highlighter-rouge">var</code> like so:</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">struct</span> <span class="kt">SwapiClient</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="nv">getFilm</span><span class="p">:</span> <span class="p">(</span>
+        <span class="kt">Int</span><span class="p">,</span> 
+        <span class="kd">@escaping</span> <span class="p">(</span><span class="kt">Result</span><span class="o">&lt;</span><span class="kt">Film</span><span class="p">,</span> <span class="kt">Error</span><span class="o">&gt;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span>
+    <span class="c1">// ...</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>You might describe the API this way:</p>
+
+<blockquote>
+  <p><em>“When I call <code class="language-plaintext highlighter-rouge">getFilm</code>, use the <code class="language-plaintext highlighter-rouge">Int</code> identifier and a closure to fetch a Film. When you’re done invoke the provided closure returning a <code class="language-plaintext highlighter-rouge">Result&lt;Film, Error&gt;</code>.</em>”</p>
+</blockquote>
+
+<p>That feels like a mouthful (a closure within a closure), but with this shape, you can define the default implementation of the <code class="language-plaintext highlighter-rouge">var</code> in-line, in the constructor or via property-injection. You can also define extensions methods on the <code class="language-plaintext highlighter-rouge">SwapiClient</code> that return other asynchronous structures like <code class="language-plaintext highlighter-rouge">Promise&lt;Film&gt;</code>, <code class="language-plaintext highlighter-rouge">Observable&lt;Film&gt;</code>, <code class="language-plaintext highlighter-rouge">Signal&lt;Film&gt;</code> or a Combine Publisher.</p>
+
+<h4 id="usage">Usage</h4>
+
+<p>At the callsite your code looks like this:</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Given some "live" implementation....</span>
+<span class="k">let</span> <span class="nv">swapiClient</span> <span class="o">=</span> <span class="kt">SwapiClient</span><span class="o">.</span><span class="n">live</span>
+
+<span class="c1">// Call getFilm, providing an identifier and callback</span>
+<span class="n">swapiClient</span><span class="o">.</span><span class="nf">getFilm</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="p">{</span> <span class="n">result</span> <span class="k">in</span>
+    <span class="k">switch</span> <span class="n">result</span> <span class="p">{</span>
+    <span class="k">case</span> <span class="o">.</span><span class="nf">failure</span><span class="p">(</span><span class="k">let</span> <span class="nv">error</span><span class="p">):</span>
+        <span class="nf">print</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+    <span class="k">case</span> <span class="o">.</span><span class="nf">success</span><span class="p">(</span><span class="k">let</span> <span class="nv">film</span><span class="p">):</span>
+        <span class="nf">print</span><span class="p">(</span><span class="n">film</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="no-dependencies">No dependencies</h2>
+
+<p>One of our goals is to avoid a really large HTTP library or an abstraction around asynchronicity. Rather we will use the tools Apple provides, namely <code class="language-plaintext highlighter-rouge">URLSession</code>, <code class="language-plaintext highlighter-rouge">URLSessionDataTask</code> and callbacks.</p>
+
+<h4 id="live-client-implementation">Live Client Implementation</h4>
+
+<p>Let’s define a static extension on <code class="language-plaintext highlighter-rouge">SwapiClient</code> that defines and immediately executes a closure. Inside the closure we’ll build and return a version of the <code class="language-plaintext highlighter-rouge">SwapiClient</code> that fetches data from the Star Wars API. There are many different ways to handle responses like this from <code class="language-plaintext highlighter-rouge">URLSession</code> as well as decoding responses; this is just one way. The important point being that we’re isolating live HTTP request-making code in a struct via its initializer. This is  ~60 lines of code:</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">SwapiError</span><span class="p">:</span> <span class="kt">Error</span> <span class="p">{</span>
+    <span class="k">case</span> <span class="nf">badRequest</span><span class="p">(</span><span class="kt">Int</span><span class="p">)</span>
+    <span class="k">case</span> <span class="n">noData</span>
+    <span class="k">case</span> <span class="nf">serverError</span><span class="p">(</span><span class="kt">String</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="kd">extension</span> <span class="kt">SwapiClient</span> <span class="p">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="k">let</span> <span class="nv">live</span><span class="p">:</span> <span class="kt">SwapiClient</span> <span class="o">=</span> <span class="p">{</span> 
+        <span class="k">let</span> <span class="nv">session</span> <span class="o">=</span> <span class="kt">URLSession</span><span class="p">(</span><span class="nv">configuration</span><span class="p">:</span> <span class="o">.</span><span class="k">default</span><span class="p">)</span>
+        <span class="k">let</span> <span class="nv">baseURL</span> <span class="o">=</span> <span class="kt">URL</span><span class="p">(</span><span class="nv">string</span><span class="p">:</span> <span class="s">"https://swapi.dev/api/"</span><span class="p">)</span><span class="o">!</span>
+        
+        <span class="k">let</span> <span class="nv">decoder</span> <span class="o">=</span> <span class="kt">JSONDecoder</span><span class="p">()</span>
+        <span class="n">decoder</span><span class="o">.</span><span class="n">keyDecodingStrategy</span> <span class="o">=</span> <span class="o">.</span><span class="n">convertFromSnakeCase</span>
+        <span class="n">decoder</span><span class="o">.</span><span class="n">dateDecodingStrategy</span> <span class="o">=</span> <span class="o">.</span><span class="nf">formatted</span><span class="p">(</span><span class="kt">DateFormatter</span><span class="o">.</span><span class="n">iso8601Full</span><span class="p">)</span>
+        
+        <span class="kd">func</span> <span class="n">handleResponse</span><span class="o">&lt;</span><span class="kt">T</span><span class="p">:</span> <span class="kt">Decodable</span><span class="o">&gt;</span><span class="p">(</span>
+            <span class="nv">forType</span><span class="p">:</span> <span class="kt">T</span><span class="o">.</span><span class="k">Type</span><span class="p">,</span> 
+            <span class="nv">data</span><span class="p">:</span> <span class="kt">Data</span><span class="p">?,</span> 
+            <span class="nv">response</span><span class="p">:</span> <span class="kt">URLResponse</span><span class="p">?,</span> 
+            <span class="nv">error</span><span class="p">:</span> <span class="kt">Error</span><span class="p">?</span>
+        <span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Result</span><span class="o">&lt;</span><span class="kt">T</span><span class="p">,</span> <span class="kt">Error</span><span class="o">&gt;</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="k">let</span> <span class="nv">e</span> <span class="o">=</span> <span class="n">error</span> <span class="p">{</span>
+                <span class="k">return</span> <span class="o">.</span><span class="nf">failure</span><span class="p">(</span><span class="kt">SwapiError</span><span class="o">.</span><span class="nf">serverError</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">localizedDescription</span><span class="p">))</span>
+            <span class="p">}</span>
+            
+            <span class="c1">// Check for non-200 response</span>
+            <span class="k">if</span> <span class="k">let</span> <span class="nv">r</span> <span class="o">=</span> <span class="n">response</span> <span class="k">as?</span> <span class="kt">HTTPURLResponse</span><span class="p">,</span>
+               <span class="o">!</span><span class="p">(</span><span class="mi">200</span><span class="o">..&lt;</span><span class="mi">300</span><span class="p">)</span><span class="o">.</span><span class="nf">contains</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">statusCode</span><span class="p">)</span> <span class="p">{</span>
+                <span class="k">return</span> <span class="o">.</span><span class="nf">failure</span><span class="p">(</span><span class="kt">SwapiError</span><span class="o">.</span><span class="nf">badRequest</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">statusCode</span><span class="p">))</span>
+            <span class="p">}</span>
+            
+            <span class="k">return</span> <span class="nf">decodeResponse</span><span class="p">(</span><span class="nv">type</span><span class="p">:</span> <span class="kt">T</span><span class="o">.</span><span class="k">self</span><span class="p">,</span> <span class="nv">from</span><span class="p">:</span> <span class="n">data</span><span class="p">)</span>
+        <span class="p">}</span>
+        
+        <span class="kd">func</span> <span class="n">decodeResponse</span><span class="o">&lt;</span><span class="kt">T</span><span class="p">:</span> <span class="kt">Decodable</span><span class="o">&gt;</span><span class="p">(</span>
+            <span class="nv">type</span><span class="p">:</span> <span class="kt">T</span><span class="o">.</span><span class="k">Type</span><span class="p">,</span> 
+            <span class="n">from</span> <span class="nv">data</span><span class="p">:</span> <span class="kt">Data</span><span class="p">?</span>
+        <span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Result</span><span class="o">&lt;</span><span class="kt">T</span><span class="p">,</span> <span class="kt">Error</span><span class="o">&gt;</span> <span class="p">{</span>
+            <span class="k">guard</span> <span class="k">let</span> <span class="nv">d</span> <span class="o">=</span> <span class="n">data</span> <span class="k">else</span> <span class="p">{</span> <span class="k">return</span> <span class="o">.</span><span class="nf">failure</span><span class="p">(</span><span class="kt">SwapiError</span><span class="o">.</span><span class="n">noData</span><span class="p">)</span> <span class="p">}</span>
+            <span class="k">return</span> <span class="kt">Result</span> <span class="p">{</span> <span class="k">try</span> <span class="n">decoder</span><span class="o">.</span><span class="nf">decode</span><span class="p">(</span><span class="n">type</span><span class="p">,</span> <span class="nv">from</span><span class="p">:</span> <span class="n">d</span><span class="p">)</span> <span class="p">}</span>
+        <span class="p">}</span>
+        
+        <span class="k">return</span> <span class="kt">SwapiClient</span><span class="p">(</span>
+            <span class="nv">getFilm</span><span class="p">:</span> <span class="p">{</span> <span class="n">filmId</span><span class="p">,</span> <span class="n">done</span> <span class="k">in</span>
+                <span class="n">session</span><span class="o">.</span><span class="nf">dataTask</span><span class="p">(</span>
+                    <span class="nv">with</span><span class="p">:</span> <span class="n">baseURL</span>
+                        <span class="o">.</span><span class="nf">appendingPathComponent</span><span class="p">(</span><span class="s">"films"</span><span class="p">)</span>
+                        <span class="o">.</span><span class="nf">appendingPathComponent</span><span class="p">(</span><span class="kt">String</span><span class="p">(</span><span class="n">filmId</span><span class="p">))</span>
+                <span class="p">)</span>
+                <span class="p">{</span>
+                    <span class="nf">done</span><span class="p">(</span><span class="nf">handleResponse</span><span class="p">(</span><span class="nv">forType</span><span class="p">:</span> <span class="kt">Film</span><span class="o">.</span><span class="k">self</span><span class="p">,</span> <span class="nv">data</span><span class="p">:</span> <span class="nv">$0</span><span class="p">,</span> <span class="nv">response</span><span class="p">:</span> <span class="nv">$1</span><span class="p">,</span> <span class="nv">error</span><span class="p">:</span> <span class="nv">$2</span><span class="p">))</span>
+                <span class="p">}</span>
+                <span class="o">.</span><span class="nf">resume</span><span class="p">()</span>
+            <span class="p">}</span>
+        <span class="p">)</span>
+    <span class="p">}()</span> 
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>That’s it!</p>
+
+<h2 id="controllable">Controllable</h2>
+
+<p>Controlling your dependencies means being able to override or define their behavior whenever you want. Swift has language level mechanisms for making this possible without creating unsafe code. This is important so that you be confident about how the code that interacts with this client will react under all possible conditions.</p>
+
+<p>Perhaps you might want to return an error and so you can define a failing API client in the same manner as above without ever making a real network request.</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">extension</span> <span class="kt">SwapiClient</span> <span class="p">{</span>
+    <span class="kd">static</span> <span class="k">let</span> <span class="nv">failingMock</span><span class="p">:</span> <span class="kt">SwapiClient</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="k">let</span> <span class="nv">e</span> <span class="o">=</span> <span class="kt">SwapiError</span><span class="o">.</span><span class="nf">serverError</span><span class="p">(</span><span class="s">"Whoops"</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kt">SwapiClient</span><span class="p">(</span>
+            <span class="nv">getFilm</span><span class="p">:</span> <span class="p">{</span> <span class="n">_</span><span class="p">,</span> <span class="n">done</span> <span class="k">in</span>
+                <span class="nf">done</span><span class="p">(</span><span class="o">.</span><span class="nf">failure</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+            <span class="p">}</span>
+        <span class="p">)</span>
+    <span class="p">}()</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>If you had a second API call (<code class="language-plaintext highlighter-rouge">getStarship</code>) that should return successfully you could do that easily and without much boiler plate:</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">extension</span> <span class="kt">SwapiClient</span> <span class="p">{</span>
+    <span class="kd">static</span> <span class="k">let</span> <span class="nv">failingMockVariant</span><span class="p">:</span> <span class="kt">SwapiClient</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="k">let</span> <span class="nv">e</span> <span class="o">=</span> <span class="kt">SwapiError</span><span class="o">.</span><span class="nf">serverError</span><span class="p">(</span><span class="s">"Whoops"</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kt">SwapiClient</span><span class="p">(</span>
+            <span class="nv">getFilm</span><span class="p">:</span> <span class="p">{</span> <span class="n">_</span><span class="p">,</span> <span class="n">done</span> <span class="k">in</span>
+                <span class="c1">// this one fails </span>
+                <span class="nf">done</span><span class="p">(</span><span class="o">.</span><span class="nf">failure</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+            <span class="p">},</span>
+            <span class="nv">getStarship</span><span class="p">:</span> <span class="p">{</span> <span class="n">_</span><span class="p">,</span> <span class="n">done</span> <span class="k">in</span> 
+                <span class="c1">// this one succeeds</span>
+                <span class="nf">done</span><span class="p">(</span><span class="o">.</span><span class="nf">success</span><span class="p">(</span><span class="kt">Starship</span><span class="o">.</span><span class="n">mock</span><span class="p">))</span>
+            <span class="p">}</span>
+        <span class="p">)</span>
+    <span class="p">}()</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Beyond mocking errors and varying responses between API calls what if you want to provide a mock client that returns real data for snapshot tests, unit tests, integration tests or UI tests that isn’t provided by the live API? That’s as simple as defining your own data and returning it whenever the client is asked. You are free to shape and define how you want the data to be returned to you in all circumstances.</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">extension</span> <span class="kt">SwapiClient</span> <span class="p">{</span>
+    <span class="kd">static</span> <span class="k">let</span> <span class="nv">unreleasedFilmsMock</span><span class="p">:</span> <span class="kt">SwapiClient</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="k">let</span> <span class="nv">films</span><span class="p">:</span> <span class="p">[</span><span class="kt">Int</span><span class="p">:</span> <span class="kt">Film</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="mi">1</span><span class="p">:</span> <span class="kt">Film</span><span class="o">.</span><span class="n">mandalorianMock</span>
+            <span class="c1">// ...</span>
+        <span class="p">]</span>
+
+        <span class="k">return</span> <span class="kt">SwapiClient</span><span class="p">(</span>
+            <span class="nv">getFilm</span><span class="p">:</span> <span class="p">{</span> <span class="n">filmId</span><span class="p">,</span> <span class="n">done</span> <span class="k">in</span>
+                <span class="k">guard</span> <span class="k">let</span> <span class="nv">film</span> <span class="o">=</span> <span class="n">films</span><span class="p">[</span><span class="n">filmId</span><span class="p">]</span> <span class="k">else</span> <span class="p">{</span>
+                    <span class="nf">done</span><span class="p">(</span><span class="o">.</span><span class="nf">failure</span><span class="p">(</span><span class="kt">SwapiError</span><span class="o">.</span><span class="n">noData</span><span class="p">))</span>
+                    <span class="k">return</span>
+                <span class="p">}</span>
+                
+                <span class="nf">done</span><span class="p">(</span><span class="o">.</span><span class="nf">success</span><span class="p">(</span><span class="n">film</span><span class="p">))</span>
+            <span class="p">}</span>
+        <span class="p">)</span>
+    <span class="p">}()</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>This pattern is now my preferred representation for API clients and really all other dependencies for that matter. I hope you found this useful.</p>
+
+</div>
+
+  </div>
+  
+</body>
+</html>
