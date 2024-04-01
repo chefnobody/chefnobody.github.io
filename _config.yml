@@ -9,6 +9,7 @@ twitter:
 
 # URL
 baseurl:            ""
+
 #baseurl:            "" #For Root Domain
 permalink:          /:year/:month/:day/:title/
 
