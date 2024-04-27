@@ -2,13 +2,14 @@
 name:               "Aaron Connolly"
 description:        "Christ Follower, Husband, Father, Software Engineer, Taco Lover"
 
-url:                "https://www.aaronconnolly.com"
+# URL
+domain:             "chefnobody.github.io"
+url:                "https://chefnobody.github.io"
+baseurl:            ""
+
 author:             "chefnobody"
 twitter:
   username:         "chefnobody"
-
-# URL
-baseurl:            ""
 
 #baseurl:            "" #For Root Domain
 permalink:          /:year/:month/:day/:title/
