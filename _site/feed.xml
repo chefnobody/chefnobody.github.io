@@ -6,6 +6,29 @@
 		<atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml" />
 		
 			<item>
+				<title>He Has a Name</title>
+        <description>&lt;h3 id=&quot;what-i-saw&quot;&gt;What I saw&lt;/h3&gt;
+
+&lt;p&gt;Today I took family to the airport and while going through the city I witnessed something that can not be unseen. With his pants down around and a sweater covering the rest of him, I watched a man talk to no one while defecating on the sidewalk.&lt;/p&gt;
+
+&lt;p&gt;In broad daylight, on a public street many cars passed by and no doubt saw him too. Who is this man?&lt;/p&gt;
+
+&lt;h3 id=&quot;what-i-think-of-it&quot;&gt;What I think of it&lt;/h3&gt;
+
+&lt;p&gt;Human excrement on city sidewalks once lived only on the internet where it could be easily avoided or dismissed. Now this image has taken residence in my memory. May I never forget it.&lt;/p&gt;
+
+&lt;p&gt;This has occupied my mind for most of the day and I am struggling to make sense of it. It is simultaenously shocking, embarrassing, comical, saddening and most of all awful. Shocking, because here in broad daylight a deranged man soiled himself for all to see. Embarrasing because here in our city where we theoretically have all the best resources and all the best intentions and we have failed this man. Comical because, well this is not something you see everyday. Saddening because this man needs help and he’s not getting it. Awful because he has a name.&lt;/p&gt;
+
+&lt;h3 id=&quot;what-does-this-say-about-us&quot;&gt;What does this say about us?&lt;/h3&gt;
+
+&lt;p&gt;Might this man have children and if so what do they think of this? Does this man have siblings? This many certainly has a mother and a father and he&lt;/p&gt;
+</description>
+				<pubDate>Thu, 29 Feb 2024 00:00:00 -0800</pubDate>
+				<link>http://localhost:4000/2024/02/29/he-has-a-name/</link>
+				<guid isPermaLink="true">http://localhost:4000/2024/02/29/he-has-a-name/</guid>
+			</item>
+		
+			<item>
 				<title>Simple API Client for iOS</title>
         <description>&lt;p&gt;👋  Hi! It’s 2021 and I want to share something I learned in the last year that I now find myself doing over and over again: Abstracting the concept of a “client” in a mobile app for asynchronously fetching data from a remote source.&lt;/p&gt;
 
