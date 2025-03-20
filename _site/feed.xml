@@ -6,6 +6,25 @@
 		<atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml" />
 		
 			<item>
+				<title>Magical Nature</title>
+        <description>&lt;p&gt;I could stare at a sunset until the darkest night comes.&lt;/p&gt;
+
+&lt;p&gt;I could watch a wood burning campfire until it’s embers glow quietly red.&lt;/p&gt;
+
+&lt;p&gt;I could see waves crash endlessly on a beach and never lose interest.&lt;/p&gt;
+
+&lt;p&gt;There is magic a pre-dawn hike down to the beach to surf with a friend.&lt;/p&gt;
+
+&lt;p&gt;There is awe and wonder at the top of every hill, cliff, mountain and vista that overlooks anything.&lt;/p&gt;
+
+&lt;p&gt;Why?&lt;/p&gt;
+</description>
+				<pubDate>Thu, 20 Mar 2025 00:00:00 -0700</pubDate>
+				<link>http://localhost:4000/2025/03/20/magical-nature/</link>
+				<guid isPermaLink="true">http://localhost:4000/2025/03/20/magical-nature/</guid>
+			</item>
+		
+			<item>
 				<title>He Has a Name</title>
         <description>&lt;p&gt;It’s a beautiful day, sunny and cool. The kind of day you would remember for its blue sky; for its breeze. City buildings loom high over hundreds of small sailboats. Families walk through the marina, while joggers, cyclists and athletes train on the bike path.&lt;/p&gt;
 
