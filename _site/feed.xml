@@ -42,7 +42,9 @@
 
 &lt;p&gt;Without any adjustments to the UI this is what Claude created:&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;/assets/demo.mov&quot; alt=&quot;Demo&quot; /&gt;&lt;/p&gt;
+&lt;video width=&quot;320&quot; height=&quot;480&quot; controls=&quot;&quot;&gt;
+  &lt;source src=&quot;/assets/demo.mov&quot; /&gt;
+&lt;/video&gt;
 
 &lt;ol&gt;
   &lt;li&gt;Clean UI with correct understanding of recording/not recording.&lt;/li&gt;
@@ -57,7 +59,9 @@
 
 &lt;h2 id=&quot;where-to-go-from-here&quot;&gt;Where to go from here?&lt;/h2&gt;
 
-&lt;p&gt;From this base we can easily tweak any of this code with targeted prompts. We can add features like Hz calibration, change the frequency visualization and add +/- guage to really see how much a tone is off. But that’s for next time.&lt;/p&gt;
+&lt;p&gt;From this base we can easily tweak any of this code with targeted prompts. We can add features like the frequency visualization and add +/- guage to really see how much a tone is off. When I am done, I will share the code so all of you with a keen eye for “AI slop” can chime in.&lt;/p&gt;
+
+&lt;p&gt;But that’s for next time.&lt;/p&gt;
 </description>
 				<pubDate>Wed, 07 Jan 2026 00:00:00 -0800</pubDate>
 				<link>http://localhost:4000/2026/01/07/chromatic-tuner-with-claude/</link>

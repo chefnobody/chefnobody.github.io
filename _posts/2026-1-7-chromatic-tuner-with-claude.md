@@ -36,7 +36,9 @@ My goal was to get to a working app without typing any code at all. First, I tri
 
 Without any adjustments to the UI this is what Claude created:
 
-![Demo](/assets/demo.mov)
+<video width="320" height="480" controls>
+  <source src="/assets/demo.mov">
+</video>
 
 1. Clean UI with correct understanding of recording/not recording.
 2. Histogram showing the audio buffer and each bin's frequency.
@@ -49,4 +51,6 @@ When the record button is tapped buffered audio data is sent through a [Fast Fou
 
 ## Where to go from here?
 
-From this base we can easily tweak any of this code with targeted prompts. We can add features like Hz calibration, change the frequency visualization and add +/- guage to really see how much a tone is off. But that's for next time.
+From this base we can easily tweak any of this code with targeted prompts. We can add features like the frequency visualization and add +/- guage to really see how much a tone is off. When I am done, I will share the code so all of you with a keen eye for "AI slop" can chime in.
+
+But that's for next time.
