@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Building a Chromatic Tuner with Claude - Part 1</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Sans+Pro:300,300i,600">
+  <link rel="stylesheet" href="/style.css">
+  <link rel="alternate" type="application/rss+xml" title="RSS Feed for Aaron Connolly" href="/feed.xml" />
+</head>
+<body>
+  <div class="outer-container"></div>
+  <div class="container">
+    <header class="masthead">
+  <h1 class="masthead-title--small">
+    <a href="/">Aaron Connolly</a>
+  </h1>
+</header>
+<div class="content post">
+  <h1 class="post-title">Building a Chromatic Tuner with Claude - Part 1</h1>
+  <div class="post-date">
+    <time>07 Jan 2026</time>
+  </div>
+  <h2 id="a-word-of-encouragement">A Word of Encouragement</h2>
+<p>If you have not tried using a AI coding assistant to build something, the time is now. Honestly, you are probably ~12 months past due.</p>
+
+<p>Perhaps you are one of the many thousands of recently unemployed software engineers, scrolling aimlessly through LinkedIn, practicing LeetCode and firing off resumes into the abyss. If that is you, can I encourage you to try something else, today?</p>
+
+<p>Consider that for less than two Chipotle burritos (<em>with</em> guac!) you can learn a new skill, study up on the fanciest new JS framework, try your hand at React Native or study some new domain you’ve always wondered about.</p>
+
+<p>With the AI coding assistants available today all of this is possible. But, better still: You can just build something.</p>
+
+<p>What are you waiting for?</p>
+
+<h2 id="an-idea">An Idea</h2>
+
+<p>My son received a guitar for Christmas and it often goes out of tune. We have a analog chromatic tuner to keep it sounding nice, but since it is clunky and good for only one thing I usually have it tucked away somewhere. Digging for it is a pain because I don’t remember where I put it and I don’t want to lose it again.</p>
+
+<p>Yesterday, I wondered what it might take to make a Chromatic Tuner iOS app with Claude Code?</p>
+
+<p>As it turns out, not very much.</p>
+
+<h2 id="multipurpose-ai">Multipurpose AI</h2>
+
+<p>Claude and other LLMs can build things, but they also can <em>teach</em> you things. One thing it taught me was some of the science behind audio processing and chromatic analysis. An LLMs ability to teach concepts might be one of its most powerful features.</p>
+
+<h2 id="get-to-the-point">Get to the Point</h2>
+
+<p>My goal was to get to a working app without typing any code at all. First, I tried a one-shot prompt:</p>
+
+<blockquote>
+  <p>Let’s build an iOS app that listens to the user making a sound on a musical instrument, such as a guitar and determines what Chord (A, B, C, D, etc…) is being played. It shows the chord it found and all the relevant audio data on the screen for the moment the user is recording Audio. This app is for reference purposes and should be simple to use. It should use SwiftUI and good abstractions for Dependencies. Let’s start with a plan to guide how this app will work. When you are done, we should be able to start the app, play a chord on a guitar and see the correct chord displayed on the app.</p>
+</blockquote>
+
+<h2 id="one-shot-results">One Shot Results</h2>
+
+<p>Without any adjustments to the UI this is what Claude created:</p>
+
+<p><img src="/assets/demo.mov" alt="Demo" /></p>
+
+<ol>
+  <li>Clean UI with correct understanding of recording/not recording.</li>
+  <li>Histogram showing the audio buffer and each bin’s frequency.</li>
+  <li>When a frequency roughly matches a known chord it is highlighted.</li>
+  <li>When an exact chord was detected it showed that chord.</li>
+</ol>
+
+<h2 id="high-level-summary">High-Level Summary</h2>
+
+<p>When the record button is tapped buffered audio data is sent through a <a href="https://en.wikipedia.org/wiki/Fast_Fourier_transform">Fast Fourier Transform (FFT)</a> to convert it to a spectrum of frequencies. Frequencies are analyzed to determine “peaks”. Peaks are estimated as muscal pitches. Frequencies within the musical range are kept and others are discarded. Peaks are then mapped to a <a href="https://en.wikipedia.org/wiki/Chroma_feature">chromagram</a> which provides a rough mapping of which cord is represented by the frequency C, C#, D and so on.</p>
+
+<h2 id="where-to-go-from-here">Where to go from here?</h2>
+
+<p>From this base we can easily tweak any of this code with targeted prompts. We can add features like Hz calibration, change the frequency visualization and add +/- guage to really see how much a tone is off. But that’s for next time.</p>
+
+</div>
+
+  </div>
+  
+</body>
+</html>
