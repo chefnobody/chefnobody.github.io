@@ -7,44 +7,50 @@
 		
 			<item>
 				<title>Building a Chromatic Tuner with Claude - Part 1</title>
-        <description>&lt;h2 id=&quot;a-word-of-encouragement&quot;&gt;A Word of Encouragement&lt;/h2&gt;
-&lt;p&gt;If you have not tried using a AI coding assistant to build something, the time is now. Honestly, you are probably ~12 months past due.&lt;/p&gt;
+        <description>&lt;h2 id=&quot;an-encouragement&quot;&gt;An Encouragement&lt;/h2&gt;
 
-&lt;p&gt;Perhaps you are one of the many thousands of recently unemployed software engineers, scrolling aimlessly through LinkedIn, practicing LeetCode and firing off resumes into the abyss. If that is you, can I encourage you to try something else, today?&lt;/p&gt;
+&lt;p&gt;If you have not tried using a AI coding assistant to build something, the time is now. Rather than scrolling endlessly or practicing LeetCode, can I encourage you to try building or learning something new today? For less than the cost of two Chipotle burritos (&lt;em&gt;with&lt;/em&gt; guac!) you can take that idea you have and and bring it to life or ramp up on that skill/domain you’ve always wondered about.&lt;/p&gt;
 
-&lt;p&gt;Consider that for less than two Chipotle burritos (&lt;em&gt;with&lt;/em&gt; guac!) you can learn a new skill, study up on the fanciest new JS framework, try your hand at React Native or study some new domain you’ve always wondered about.&lt;/p&gt;
+&lt;hr /&gt;
 
-&lt;p&gt;With the AI coding assistants available today all of this is possible. But, better still: You can just build something.&lt;/p&gt;
+&lt;p&gt;My son received a guitar for Christmas and it often goes out of tune. We have an analog chromatic tuner to keep it sounding nice, but since it is clunky and good for only one thing it is tucked away some place I can’t remember.&lt;/p&gt;
 
-&lt;p&gt;What are you waiting for?&lt;/p&gt;
-
-&lt;h2 id=&quot;an-idea&quot;&gt;An Idea&lt;/h2&gt;
-
-&lt;p&gt;My son received a guitar for Christmas and it often goes out of tune. We have a analog chromatic tuner to keep it sounding nice, but since it is clunky and good for only one thing I usually have it tucked away somewhere. Digging for it is a pain because I don’t remember where I put it and I don’t want to lose it again.&lt;/p&gt;
-
-&lt;p&gt;Yesterday, I wondered what it might take to make a Chromatic Tuner iOS app with Claude Code?&lt;/p&gt;
+&lt;p&gt;While looking for it, I wondered what it might take to make a tuner app for iOS app with Claude Code?&lt;/p&gt;
 
 &lt;p&gt;As it turns out, not very much.&lt;/p&gt;
 
-&lt;h2 id=&quot;multipurpose-ai&quot;&gt;Multipurpose AI&lt;/h2&gt;
+&lt;h2 id=&quot;tuning-and-fast-fourier-transforms&quot;&gt;Tuning and Fast Fourier Transforms&lt;/h2&gt;
 
-&lt;p&gt;Claude and other LLMs can build things, but they also can &lt;em&gt;teach&lt;/em&gt; you things. One thing it taught me was some of the science behind audio processing and chromatic analysis. An LLMs ability to teach concepts might be one of its most powerful features.&lt;/p&gt;
+&lt;p&gt;🗒️ &lt;strong&gt;Note:&lt;/strong&gt; Sound analysis is a heavily studied domain. There is much that can be said here, but I am not an expert.&lt;/p&gt;
 
-&lt;h2 id=&quot;get-to-the-point&quot;&gt;Get to the Point&lt;/h2&gt;
+&lt;p&gt;&lt;a href=&quot;https://en.wikipedia.org/wiki/Musical_tuning#:~:text=Tuning%20is%20the%20process%20of,such%20as%20A%20%3D%20440%20Hz.&quot;&gt;“Tuning&lt;/a&gt; an instrucent is the process of adjusting the pitch of one or many tones from the instrument to establish known typical between those tones. Tuning is usually based on a fixed reference, such as &lt;strong&gt;A&lt;/strong&gt; == &lt;strong&gt;440 Hz&lt;/strong&gt;.”&lt;/p&gt;
 
-&lt;p&gt;My goal was to get to a working app without typing any code at all. First, I tried a one-shot prompt:&lt;/p&gt;
+&lt;p&gt;Have you ever noticed at the beginning of an orchestra performance the musicians all “tune up”? They’re all aligning the frequency the “A” chord to 440hz.&lt;/p&gt;
+
+&lt;p&gt;An an analog tuner looks like this:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/korg-tuner.webp&quot; alt=&quot;Korg Tuner&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;A tuner works by receiving sound waves through a micrphone, measuring their frequency and then mapping the frequency to a chord. The interface tells you how flat (-hz) or sharp (+hz) that frequency is off some well known interval. Then, if detected the tuner will show you the name of the chord.&lt;/p&gt;
+
+&lt;h2 id=&quot;goal&quot;&gt;Goal&lt;/h2&gt;
+
+&lt;p&gt;Using Claude, I aim to build a version of this. With little to no code editing of my own.
+I wrote the following prompt:&lt;/p&gt;
 
 &lt;blockquote&gt;
   &lt;p&gt;Let’s build an iOS app that listens to the user making a sound on a musical instrument, such as a guitar and determines what Chord (A, B, C, D, etc…) is being played. It shows the chord it found and all the relevant audio data on the screen for the moment the user is recording Audio. This app is for reference purposes and should be simple to use. It should use SwiftUI and good abstractions for Dependencies. Let’s start with a plan to guide how this app will work. When you are done, we should be able to start the app, play a chord on a guitar and see the correct chord displayed on the app.&lt;/p&gt;
 &lt;/blockquote&gt;
 
-&lt;h2 id=&quot;one-shot-results&quot;&gt;One Shot Results&lt;/h2&gt;
+&lt;h2 id=&quot;result&quot;&gt;Result&lt;/h2&gt;
 
-&lt;p&gt;Without any adjustments to the UI this is what Claude created:&lt;/p&gt;
+&lt;p&gt;I built and ran the app in the simulator, accepted the audio permissions and played an E chord on my guitar:&lt;/p&gt;
 
-&lt;video width=&quot;320&quot; height=&quot;480&quot; controls=&quot;&quot;&gt;
+&lt;video width=&quot;700&quot; controls=&quot;&quot;&gt;
   &lt;source src=&quot;/assets/demo.mov&quot; /&gt;
 &lt;/video&gt;
+
+&lt;p&gt;What came out of the box worked, mostly. It gave me the following:&lt;/p&gt;
 
 &lt;ol&gt;
   &lt;li&gt;Clean UI with correct understanding of recording/not recording.&lt;/li&gt;
@@ -53,13 +59,21 @@
   &lt;li&gt;When an exact chord was detected it showed that chord.&lt;/li&gt;
 &lt;/ol&gt;
 
-&lt;h2 id=&quot;high-level-summary&quot;&gt;High-Level Summary&lt;/h2&gt;
+&lt;p&gt;Like me it’s not perfect but in a few minutes I’m nearly there.&lt;/p&gt;
+
+&lt;h2 id=&quot;technical-high-level-summary&quot;&gt;Technical High-Level Summary&lt;/h2&gt;
 
 &lt;p&gt;When the record button is tapped buffered audio data is sent through a &lt;a href=&quot;https://en.wikipedia.org/wiki/Fast_Fourier_transform&quot;&gt;Fast Fourier Transform (FFT)&lt;/a&gt; to convert it to a spectrum of frequencies. Frequencies are analyzed to determine “peaks”. Peaks are estimated as muscal pitches. Frequencies within the musical range are kept and others are discarded. Peaks are then mapped to a &lt;a href=&quot;https://en.wikipedia.org/wiki/Chroma_feature&quot;&gt;chromagram&lt;/a&gt; which provides a rough mapping of which cord is represented by the frequency C, C#, D and so on.&lt;/p&gt;
 
+&lt;p&gt;Claude understood all of this and from my estimation produced pretty reasonable code. With some more testing and instrumenting 🥁 this is looking promising.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Time:&lt;/strong&gt; ~10min&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Dollars:&lt;/strong&gt; $20&lt;/p&gt;
+
 &lt;h2 id=&quot;where-to-go-from-here&quot;&gt;Where to go from here?&lt;/h2&gt;
 
-&lt;p&gt;From this base we can easily tweak any of this code with targeted prompts. We can add features like the frequency visualization and add +/- guage to really see how much a tone is off. When I am done, I will share the code so all of you with a keen eye for “AI slop” can chime in.&lt;/p&gt;
+&lt;p&gt;From this base I can easily tweak anything I want like changing the frequency visualization and add +/- guage to really see how much a tone is off. There are also a few bugs to fix 😃&lt;/p&gt;
 
 &lt;p&gt;But that’s for next time.&lt;/p&gt;
 </description>
